@@ -39,7 +39,7 @@ export default class ReactCalculator extends Component {
                 let input = row[i];
 
                 inputRow.push(
-                    <InputButton value={input} key={r + "-" + i} />
+                    <InputButton value={input} onPress={this._onInputButtonPressed.bind(this, input)} key={r + "-" + i} />
                 );
             }
 
@@ -47,5 +47,9 @@ export default class ReactCalculator extends Component {
         }
 
         return views;
+    }
+
+    _onInputButtonPressed(input){
+        alert(input)
     }
 }
