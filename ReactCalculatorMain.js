@@ -17,12 +17,22 @@ export default class ReactCalculator extends Component {
     render() {
         return (
             <View style={Style.rootContainer}>
-                <View style={Style.displayContainer}></View>
+                <View style={Style.displayContainer}>
+                    <Text style={Style.displayText}>{this.state.inputValue}</Text>
+                </View>
                 <View style={Style.inputContainer}>
                     {this._renderInputButtons()}
                     </View>
             </View>
         )
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            inputValue: 0
+        }
     }
 
     /**
@@ -50,6 +60,49 @@ export default class ReactCalculator extends Component {
     }
 
     _onInputButtonPressed(input){
-        alert(input)
+        switch (typeof input) {
+            case 'number':
+                return this._handleNumberInput(input);
+            case 'string':
+                return this._handleStringInput(input);
+        }
+    }
+
+    _handleNumberInput(input){
+        let inputValue = (this.state.inputValue * 10) + input;
+
+        this.setState({
+            inputValue: inputValue
+        })
+    }
+
+    _handleStringInput(input){
+        switch (input){
+            case '/':
+            case '*':
+            case '+':
+            case '-':
+                this.setState({
+                    selectedSymbol: input,
+                    previousInputValue: this.state.inputValue,
+                    inputValue: 0
+                });
+                break;
+            case '=':
+                let symbol = this.state.selectedSymbol,
+                    inputValue = this.state.inputValue,
+                    previousInputValue = this.state.previousInputValue;
+
+                if (!symbol) {
+                    return;
+                }
+
+                this.setState({
+                    previousInputValue: 0,
+                    inputValue: eval(previousInputValue + symbol + inputValue),
+                    selectedSymbol: null
+                });
+                break;
+        }
     }
 }
